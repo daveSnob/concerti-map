@@ -1,0 +1,8 @@
+{
+  "artists": [
+    { "name": "Radiohead", "spotifyId": "4Z8W4fKeB5YxbusRsdQVPb" },
+    { "name": "The Cure", "spotifyId": "7bu3H8JO7d0UbMoVzbo70s" },
+    { "name": "Vasco Rossi" }
+  ],
+  "exclude": []
+}

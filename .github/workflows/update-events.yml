@@ -1,0 +1,62 @@
+# Aggiorna data/events.json ogni giorno e ripubblica il sito.
+name: Aggiorna concerti
+
+on:
+  schedule:
+    - cron: '17 4 * * *' # ogni giorno alle 04:17 UTC (minuto "strano" per evitare i picchi di GitHub)
+  workflow_dispatch: {}  # avvio manuale dalla scheda Actions
+
+# Una sola esecuzione alla volta: evita commit concorrenti su data/.
+concurrency:
+  group: update-events
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write # serve per committare data/events.json
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test della pipeline
+        run: npm test
+
+      - name: Scarica concerti e geocodifica
+        run: node scripts/fetch-events.js
+        env:
+          TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
+          BANDSINTOWN_APP_ID: ${{ secrets.BANDSINTOWN_APP_ID }}
+          SONGKICK_API_KEY: ${{ secrets.SONGKICK_API_KEY }}
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+          NOMINATIM_EMAIL: ${{ secrets.NOMINATIM_EMAIL }}
+
+      - name: Commit dei dati aggiornati (solo se cambiati)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "Nessuna modifica ai dati."
+          else
+            git commit -m "Aggiorna concerti ($(date -u +%Y-%m-%d))"
+            git pull --rebase
+            git push
+          fi
+
+  # I push fatti con GITHUB_TOKEN non avviano altri workflow:
+  # per questo il deploy viene richiamato esplicitamente qui.
+  deploy:
+    needs: update
+    uses: ./.github/workflows/deploy-pages.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write

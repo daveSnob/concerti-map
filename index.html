@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Concerti live</title>
+  <meta name="description" content="Mappa e calendario dei concerti degli artisti che seguo su Spotify.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎸</text></svg>">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+        integrity="sha256-YU3qCpj/P06tdPBJGPax0bm6Q1wltfwjsho5TR4+TYc=" crossorigin="">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+        integrity="sha256-YSWCMtmNZNwqex4CEw1nQhvFub2lmU7vcCKP+XVwwXA=" crossorigin="">
+  <link rel="stylesheet" href="src/styles.css">
+
+  <!-- Applica subito il tema salvato, per evitare il "lampo" chiaro in dark mode. -->
+  <script>
+    try { const t = localStorage.getItem('concerti:theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch {}
+  </script>
+</head>
+<body data-view="list">
+  <header class="topbar">
+    <h1 class="brand">🎸 <span>Concerti live</span></h1>
+    <div class="topbar-actions">
+      <button id="spotify-btn" class="btn btn-spotify" type="button" hidden>Accedi con Spotify</button>
+      <button id="theme-btn" class="btn btn-icon" type="button" title="Tema: automatico" aria-label="Cambia tema">◐</button>
+    </div>
+  </header>
+
+  <div id="banner" class="banner" role="status" hidden></div>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <details class="filters" id="filters-box" open>
+        <summary>Filtri <span id="filter-count" class="pill" hidden></span></summary>
+        <form id="filters" class="filters-form" autocomplete="off">
+          <label>Nazione
+            <select name="country"></select>
+          </label>
+          <label>Città
+            <select name="city"></select>
+          </label>
+          <label class="span-2">Artista
+            <select name="artist"></select>
+          </label>
+          <label>Dal
+            <input type="date" name="from">
+          </label>
+          <label>Al
+            <input type="date" name="to">
+          </label>
+          <label class="check span-2" id="followed-only-wrap" hidden>
+            <input type="checkbox" name="followedOnly"> Solo artisti che seguo su Spotify
+          </label>
+          <label class="check span-2">
+            <input type="checkbox" name="archive"> Mostra l'archivio (concerti passati)
+          </label>
+          <button type="reset" class="btn btn-ghost span-2">Azzera filtri</button>
+        </form>
+      </details>
+
+      <nav class="tabs" role="tablist" aria-label="Vista">
+        <button type="button" role="tab" data-view="map" class="tab tab-map">Mappa</button>
+        <button type="button" role="tab" data-view="list" class="tab">Lista</button>
+        <button type="button" role="tab" data-view="calendar" class="tab">Calendario</button>
+      </nav>
+
+      <div class="results-bar">
+        <span id="results-summary" aria-live="polite"></span>
+        <button id="sort-btn" class="btn btn-ghost btn-small" type="button">Data ↑</button>
+      </div>
+
+      <section id="list-view" class="view view-list" aria-label="Elenco concerti"></section>
+      <section id="calendar-view" class="view view-calendar" aria-label="Calendario concerti"></section>
+    </aside>
+
+    <section class="view view-map map-wrap" aria-label="Mappa dei locali">
+      <div id="map"></div>
+      <div id="map-note" class="map-note" hidden></div>
+    </section>
+  </main>
+
+  <!-- Pannello di dettaglio del locale (laterale su desktop, "bottom sheet" su smartphone). -->
+  <aside id="venue-panel" class="venue-panel" aria-label="Dettagli locale" hidden></aside>
+
+  <!-- Pannello Spotify: artisti seguiti non ancora presenti in artists.json. -->
+  <dialog id="spotify-dialog" class="dialog"></dialog>
+
+  <footer id="status" class="status"></footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"
+          integrity="sha256-Hk4dIpcqOSb0hZjgyvFOP+cEmDXUKKNE/tT542ZbNQg=" crossorigin=""></script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+/* ==========================================================================
+   Concerti live — stili
+   Struttura: token (colori/spazi) → base → layout → componenti → responsive.
+   ========================================================================== */
+
+/* ---- Token: tema chiaro (predefinito) ---- */
+:root {
+  --bg: #f6f5f2;
+  --surface: #ffffff;
+  --surface-2: #efede8;
+  --text: #1d1c1a;
+  --muted: #6b6862;
+  --border: #dedad2;
+  --accent: #d6402b;
+  --accent-text: #ffffff;
+  --accent-soft: #fbe6e2;
+  --ok: #2f7d4f;
+  --warn: #a86400;
+  --warn-soft: #fff3dc;
+  --error: #b42318;
+  --error-soft: #fde8e6;
+  --spotify: #1db954;
+  --shadow: 0 6px 24px rgb(0 0 0 / 0.12);
+  --radius: 12px;
+  --header-h: 56px;
+  --sidebar-w: 420px;
+  color-scheme: light;
+}
+
+/* ---- Token: tema scuro (automatico o scelto) ---- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141413;
+    --surface: #1e1d1b;
+    --surface-2: #2a2926;
+    --text: #f0eee9;
+    --muted: #a19d95;
+    --border: #3a3834;
+    --accent: #ff6a52;
+    --accent-text: #1a0d0a;
+    --accent-soft: #3d201a;
+    --ok: #5cc98a;
+    --warn: #f2b14c;
+    --warn-soft: #3a2c12;
+    --error: #ff8a7d;
+    --error-soft: #3e1a17;
+    --shadow: 0 6px 24px rgb(0 0 0 / 0.45);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141413;
+  --surface: #1e1d1b;
+  --surface-2: #2a2926;
+  --text: #f0eee9;
+  --muted: #a19d95;
+  --border: #3a3834;
+  --accent: #ff6a52;
+  --accent-text: #1a0d0a;
+  --accent-soft: #3d201a;
+  --ok: #5cc98a;
+  --warn: #f2b14c;
+  --warn-soft: #3a2c12;
+  --error: #ff8a7d;
+  --error-soft: #3e1a17;
+  --shadow: 0 6px 24px rgb(0 0 0 / 0.45);
+  color-scheme: dark;
+}
+
+/* Mappa scura: i tile OSM vengono invertiti (evita provider di tile con chiave). */
+:root[data-theme="dark"] .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9); }
+}
+
+/* ---- Base ---- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--accent); }
+h1, h2, h3 { line-height: 1.2; }
+button, input, select { font: inherit; color: inherit; }
+code { background: var(--surface-2); padding: 0 4px; border-radius: 4px; }
+[hidden] { display: none !important; }
+.muted { color: var(--muted); font-size: 0.9em; }
+.empty { color: var(--muted); padding: 24px 4px; text-align: center; list-style: none; }
+
+/* ---- Pulsanti ---- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 38px; padding: 0 14px;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface); color: var(--text);
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+}
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible, .tab:focus-visible, .cal-cell:focus-visible, .venue-link:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+.btn-ghost { background: transparent; }
+.btn-small { min-height: 32px; padding: 0 12px; font-size: 0.88em; }
+.btn-icon { width: 38px; padding: 0; font-size: 1.1em; }
+.btn-spotify { background: var(--spotify); border-color: var(--spotify); color: #0b2814; font-weight: 600; }
+.link-small {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  color: var(--accent); font-size: 0.85em; text-decoration: underline;
+}
+
+/* ---- Layout generale ---- */
+.topbar {
+  position: sticky; top: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  height: var(--header-h); padding: 0 16px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+}
+.brand { margin: 0; font-size: 1.15rem; font-weight: 700; white-space: nowrap; }
+.topbar-actions { display: flex; gap: 8px; }
+
+.banner { margin: 0; padding: 10px 16px; font-size: 0.92em; border-bottom: 1px solid var(--border); }
+.banner-info { background: var(--surface-2); }
+.banner-warn { background: var(--warn-soft); color: var(--warn); }
+.banner-error { background: var(--error-soft); color: var(--error); }
+
+.layout { display: flex; flex-direction: column; }
+.sidebar { padding: 12px 16px; min-width: 0; }
+.map-wrap { position: relative; height: 70dvh; min-height: 360px; }
+#map { position: absolute; inset: 0; background: var(--surface-2); }
+.map-note {
+  position: absolute; left: 12px; bottom: 24px; z-index: 500;
+  padding: 6px 10px; border-radius: 8px; font-size: 0.85em;
+  background: var(--surface); box-shadow: var(--shadow);
+}
+.status { padding: 12px 16px 24px; color: var(--muted); font-size: 0.85em; }
+.src-ok { color: var(--ok); }
+.src-partial { color: var(--warn); }
+.src-error { color: var(--error); }
+
+/* ---- Filtri ---- */
+.filters {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 0 14px;
+}
+.filters summary {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 0; cursor: pointer; font-weight: 600; list-style: none;
+}
+.filters summary::-webkit-details-marker { display: none; }
+.filters summary::after { content: "▾"; margin-left: auto; color: var(--muted); }
+.filters[open] summary::after { content: "▴"; }
+.pill {
+  display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: 999px; background: var(--accent); color: var(--accent-text); font-size: 0.78em;
+}
+.filters-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 14px; }
+.filters-form label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85em; color: var(--muted); min-width: 0; }
+.filters-form select, .filters-form input[type="date"] {
+  width: 100%; min-height: 40px; padding: 6px 10px;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text);
+}
+.filters-form .check { flex-direction: row; align-items: center; gap: 8px; color: var(--text); font-size: 0.92em; }
+.filters-form .check input { width: 18px; height: 18px; accent-color: var(--accent); }
+.span-2 { grid-column: span 2; }
+
+/* ---- Tab e barra risultati ---- */
+.tabs {
+  position: sticky; top: var(--header-h); z-index: 900;
+  display: flex; gap: 4px; margin: 12px -16px 0; padding: 8px 16px;
+  background: var(--bg);
+}
+.tab {
+  flex: 1; min-height: 38px; border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface); cursor: pointer;
+}
+.tab[aria-selected="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.results-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px 0; color: var(--muted); font-size: 0.9em; }
+
+/* Viste su smartphone: una alla volta. */
+body[data-view="map"] .view-list,
+body[data-view="map"] .view-calendar,
+body[data-view="list"] .view-map,
+body[data-view="list"] .view-calendar,
+body[data-view="calendar"] .view-map,
+body[data-view="calendar"] .view-list { display: none; }
+
+/* ---- Lista eventi ---- */
+.month-heading {
+  margin: 18px 0 8px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);
+}
+.event-card {
+  display: grid; grid-template-columns: 64px 1fr; gap: 12px;
+  padding: 12px; margin-bottom: 8px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.event-card.is-past { opacity: 0.8; }
+.date-badge {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-radius: 10px; background: var(--accent-soft); color: var(--accent); padding: 6px 0;
+  text-transform: uppercase; font-size: 0.72em; font-weight: 600; text-align: center;
+}
+.date-badge .day { font-size: 1.9em; line-height: 1; color: var(--text); }
+.event-body { min-width: 0; }
+.event-artist { margin: 0 0 2px; font-size: 1.02rem; }
+.venue-link {
+  background: none; border: 0; padding: 0; cursor: pointer; text-align: left;
+  font-weight: 500; color: var(--text); text-decoration: underline; text-decoration-color: var(--border);
+  text-underline-offset: 3px; overflow-wrap: anywhere;
+}
+.venue-link:hover { text-decoration-color: var(--accent); }
+.event-meta { margin: 2px 0 8px; color: var(--muted); font-size: 0.9em; }
+.event-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.event-sources { margin: 8px 0 0; color: var(--muted); font-size: 0.75em; }
+.tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 0.7em; vertical-align: middle; }
+.tag-warn { background: var(--warn-soft); color: var(--warn); }
+.load-more { width: 100%; margin: 8px 0 16px; }
+
+/* ---- Calendario ---- */
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin: 8px 0; }
+.cal-title { margin: 0; font-size: 1.05rem; text-transform: capitalize; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-wd { text-align: center; font-size: 0.75em; color: var(--muted); text-transform: uppercase; padding: 4px 0; }
+.cal-cell {
+  position: relative; aspect-ratio: 1; min-height: 40px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--surface); padding: 0;
+}
+.cal-cell.is-empty { border: 0; background: none; }
+.cal-cell:disabled { color: var(--muted); opacity: 0.6; cursor: default; }
+.cal-cell.has-events { cursor: pointer; border-color: var(--accent); }
+.cal-cell.is-today .cal-num { text-decoration: underline; font-weight: 700; }
+.cal-cell.is-selected { background: var(--accent); color: var(--accent-text); }
+.cal-count {
+  min-width: 20px; padding: 0 5px; border-radius: 999px; font-size: 0.72em; font-weight: 700;
+  background: var(--accent); color: var(--accent-text);
+}
+.cal-cell.is-selected .cal-count { background: var(--accent-text); color: var(--accent); }
+.cal-list-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin: 18px 0 4px; font-size: 1rem; }
+.cal-list-title::first-letter { text-transform: uppercase; }
+
+/* ---- Marker sulla mappa ---- */
+.venue-marker {
+  display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+  background: var(--accent); color: var(--accent-text); font-weight: 700; font-size: 13px;
+  border: 3px solid var(--surface); box-shadow: 0 2px 8px rgb(0 0 0 / 0.35);
+  transition: transform 0.15s;
+}
+.venue-marker.is-approx { border-style: dashed; border-color: var(--text); }
+.venue-marker.is-selected { transform: scale(1.25); background: var(--text); color: var(--bg); }
+.leaflet-container { font: inherit; }
+/* Cluster con i colori del tema invece del verde/giallo predefinito. */
+.marker-cluster-small, .marker-cluster-medium, .marker-cluster-large { background: color-mix(in srgb, var(--accent) 35%, transparent); }
+.marker-cluster-small div, .marker-cluster-medium div, .marker-cluster-large div {
+  background: var(--accent); color: var(--accent-text); font-weight: 700;
+}
+.leaflet-tooltip { background: var(--surface); color: var(--text); border-color: var(--border); }
+.leaflet-bar a { background: var(--surface); color: var(--text); border-color: var(--border); }
+.leaflet-control-attribution { background: color-mix(in srgb, var(--surface) 85%, transparent) !important; color: var(--muted); }
+
+/* ---- Pannello del locale (bottom sheet su smartphone) ---- */
+.venue-panel {
+  position: fixed; z-index: 1100; left: 0; right: 0; bottom: 0;
+  max-height: 72dvh; overflow-y: auto; overscroll-behavior: contain;
+  padding: 8px 16px calc(16px + env(safe-area-inset-bottom));
+  background: var(--surface); border-top: 1px solid var(--border);
+  border-radius: 18px 18px 0 0; box-shadow: var(--shadow);
+}
+.panel-handle { width: 40px; height: 4px; margin: 4px auto 10px; border-radius: 4px; background: var(--border); }
+.panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.panel-title { margin: 0; font-size: 1.2rem; outline: none; }
+.panel-sub { margin: 4px 0 0; color: var(--muted); }
+.panel-section { margin: 18px 0 8px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.venue-details { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 14px 0 8px; font-size: 0.92em; }
+.venue-details dt { color: var(--muted); }
+.venue-details dd { margin: 0; overflow-wrap: anywhere; }
+.note { padding: 8px 10px; border-radius: 8px; background: var(--warn-soft); color: var(--warn); font-size: 0.88em; }
+.venue-events { list-style: none; margin: 0; padding: 0; }
+.venue-event { padding: 10px 0; border-top: 1px solid var(--border); }
+.venue-event-head { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin-bottom: 6px; }
+.venue-event-date { color: var(--muted); font-size: 0.88em; text-transform: capitalize; }
+
+/* ---- Finestra Spotify ---- */
+.dialog {
+  width: min(560px, calc(100vw - 32px)); max-height: 85dvh; padding: 0;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); color: var(--text); box-shadow: var(--shadow);
+}
+.dialog::backdrop { background: rgb(0 0 0 / 0.45); }
+.dialog-body { padding: 16px; }
+.dialog-footer { display: flex; justify-content: flex-end; margin-top: 16px; }
+.chip-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; list-style: none; max-height: 40dvh; overflow-y: auto; }
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--surface-2); font-size: 0.88em; }
+
+/* ---- Desktop: colonna a sinistra, mappa sempre visibile a destra ---- */
+@media (min-width: 900px) {
+  body { height: 100dvh; display: grid; grid-template-rows: auto auto 1fr auto; overflow: hidden; }
+  .layout { flex-direction: row; min-height: 0; }
+  .sidebar { width: var(--sidebar-w); flex: none; overflow-y: auto; border-right: 1px solid var(--border); }
+  .map-wrap { flex: 1; height: auto; }
+  body.panel-open .map-wrap { margin-right: 400px; }
+  .tab-map { display: none; }
+  .tabs { top: -12px; }
+  body[data-view] .view-map { display: block; }
+  body[data-view="map"] .view-list { display: block; }
+  .status { padding: 8px 16px; border-top: 1px solid var(--border); }
+
+  .venue-panel {
+    top: var(--header-h); left: auto; right: 0; bottom: 0; width: 400px; max-height: none;
+    border-radius: 0; border-top: 0; border-left: 1px solid var(--border);
+    padding: 16px;
+  }
+  .panel-handle { display: none; }
+}
+
+@media (max-width: 380px) {
+  .brand span { display: none; }
+  .filters-form { grid-template-columns: 1fr; }
+  .span-2 { grid-column: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "concerti-map",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mappa e calendario dei concerti degli artisti seguiti su Spotify (sito statico + GitHub Action).",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "fetch": "node scripts/fetch-events.js",
+    "spotify-auth": "node scripts/spotify-auth.js",
+    "serve": "npx --yes http-server -c-1 -p 8080 .",
+    "test": "node --test \"scripts/test/*.test.js\""
+  }
+}
