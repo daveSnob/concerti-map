@@ -1,9 +1,42 @@
 {
   "version": 1,
-  "generatedAt": null,
+  "generatedAt": "2026-10-25T09:09:13.467Z",
   "archiveDays": 365,
-  "sources": {},
-  "artists": [],
+  "sources": {
+    "spotify": {
+      "enabled": false,
+      "status": "disabled"
+    },
+    "ticketmaster": {
+      "enabled": false,
+      "status": "disabled"
+    },
+    "bandsintown": {
+      "enabled": false,
+      "status": "disabled"
+    },
+    "songkick": {
+      "enabled": false,
+      "status": "disabled"
+    }
+  },
+  "artists": [
+    {
+      "name": "Radiohead",
+      "key": "radiohead",
+      "spotifyId": "4Z8W4fKeB5YxbusRsdQVPb"
+    },
+    {
+      "name": "The Cure",
+      "key": "cure",
+      "spotifyId": "7bu3H8JO7d0UbMoVzbo70s"
+    },
+    {
+      "name": "Vasco Rossi",
+      "key": "vasco-rossi",
+      "spotifyId": null
+    }
+  ],
   "venues": [],
   "events": []
 }
